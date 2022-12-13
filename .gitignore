@@ -1,0 +1,7 @@
+__pycache__
+.DS_store
+venv
+
+secrets.h
+secrets.py
+todo.txt
