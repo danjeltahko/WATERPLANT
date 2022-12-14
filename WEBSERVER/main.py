@@ -1,10 +1,8 @@
 
 from database import Database
-from flask import Flask, render_template, send_file, make_response, url_for, Response
+from flask import Flask, Response
 
-import pandas as pd
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
