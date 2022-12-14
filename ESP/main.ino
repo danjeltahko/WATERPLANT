@@ -2,7 +2,6 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-#include <time.h>
 
 #include "secrets.h"
 
@@ -70,8 +69,10 @@ void wifi_init() {
 void send_msg() {
     // send json object to mqtt broker (AWS IoT)
     StaticJsonDocument<200> doc;
-    doc["date"] = asctime(&timeinfo);
-    doc["moisture"] = analogRead(sensor);
+    int value = analogRead(sensor);
+    doc["moisture"] = value;
+    int moisture_percent = map(value, 5, 600, 0, 100);
+    doc["moisture_percent"] = moisture_percent;
     char jsonBuffer[512];
     serializeJson(doc, jsonBuffer);
     mqtt_client.publish(MQTT_PUB_TOPIC, jsonBuffer);

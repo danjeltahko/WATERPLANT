@@ -1,11 +1,37 @@
-from flask import Flask
+
+from database import Database
+from flask import Flask, render_template, send_file, make_response, url_for, Response
+
+import pandas as pd
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
+
+db = Database()
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return "This is main page"
+@app.route("/")
+def plot_png():
+    fig = create_figure()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
+def create_figure():
+    sensor_data = db.get_data()
+    fig, ax = plt.subplots(figsize = (10,8))
+
+    x = sensor_data.Datetime
+    y = sensor_data.Moisture
+
+    ax.plot(x, y)
+    ax.set_yticks(range(40,101, 10))
+    plt.title("Avocado plant moisture over time")
+    return fig
 
 if __name__ == "__main__":
     app.debug = True 

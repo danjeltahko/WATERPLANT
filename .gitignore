@@ -3,5 +3,5 @@ __pycache__
 venv
 
 secrets.h
-secrets.py
+secret.py
 todo.txt
