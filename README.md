@@ -2,7 +2,7 @@
 
 ## About
 
-This is a Cloud service school project with ambition to enlarge my home automations. In this project I will use an ESP8266 with the help of a soil sensor to send MQTT messages to AWS IoT Core. I will store the data in DynamoDB and if my plant is too dry a Lambda function will trigger and send a message/notification on Telegram. I will visualize my data with Python Flask web application/server to see moisture at the moment and over time 🥑.
+This is a Cloud service school project with ambition to enlarge my home automations. In this project I will use an ESP8266 with the help of a soil sensor to send MQTT messages to AWS IoT Core. I will store the data in DynamoDB and if my plant is too dry a Lambda function will trigger and send a message/notification on Telegram. I will visualize my data with Python Flask web application/server to see moisture over time 🥑.
 
 ![schema](reference/schema.png)
 
@@ -13,7 +13,7 @@ My first thought was to use an ESP8266-01 with a 3V, 230mAh battery (CR2032) and
 
 ![esp-01-deepsleep](reference/deepsleep_pin.png)
 
-So I bought a Wemos D1 Mini v3 instead because of good price, good size and it has A0, RST & the 16 pin so I could use the soil sensor and deep sleep to save battery. I calculated that with the CT2032 battery it would last for 59 days if ESP only sent MQTT messages 3 times a day. But the Wemos D1 Mini returns ```rst cause:5``` when waking up from deep sleep mode and after some research I found it to be either because of bad soldering or bad wiring, and I had both. So instead of batteries I use power from USB (because battery would only last like 3 hours without deep sleep) and have an internal timer that sends mqtt messages every half hour instead of three times a day. (reference below)
+So I bought a Wemos D1 Mini v3 instead because of good price, good size and it has A0, RST & the 16 pin so I could use the soil sensor and deep sleep to save battery. I calculated that with the CT2032 battery it would last for 59 days if ESP only sent MQTT messages 3 times a day. But the Wemos D1 Mini returns ```rst cause:5``` when waking up from deep sleep mode and after some research I found it to be either because of bad soldering or bad wiring, and I had both. So instead of batteries I use power from USB (because battery would only last like 3 hours without deep sleep) and have an internal timer that sends MQTT messages every half hour instead of three times a day. (reference below)
 
 ![esp-wire](reference/esp_done.jpeg)
 
@@ -49,12 +49,12 @@ def lambda_handler(event, context):
        'body': json.dumps(response.json())
    }
 ```
-I then created a new rule in AWS IoT that triggers this Lambda function whenever my plant is to dry/needs watering and tested if everything works with AWS IoT MQTT Test Client. It did!🤠
+I then created a new rule in AWS IoT that triggers this Lambda function whenever my plant is to dry/needs watering and tested if everything works with AWS IoT MQTT Test Client. And it did!🤠
 
 ![telegram-bot](reference/telegram.png)
 
 * ### Setting up Flask to visualize data
 
-Lastly I configured awscli on my computer and put together a simple flask server to visualized my data with matplotlib.
+Lastly I configured awscli on my computer to store my AIM users ```id key``` and ```secret key``` so I could get data directly from DynamoDB with a simple python script. I then put together a flask server to visualized my data with matplotlib. (reference below)
 
 ![flask_data](reference/plotted_moist.png)
