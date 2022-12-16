@@ -2,7 +2,7 @@
 
 ## About
 
-This is a Cloud service school project with ambition to enlarge my home automations. In this project I will use an ESP8266 with the help of a soil sensor to send MQTT messages to AWS IoT Core. I will store the data in DynamoDB and if my plant is too dry a Lambda function will trigger and send a message/notification on Telegram. I will visualize my data with Python Flask web application/server to see moisture over time 🥑.
+This is a Cloud service school project with ambition to enlarge my home automations. In this project I will use an ESP8266 with the help of a soil sensor to send MQTT messages to AWS IoT Core. I will store the data in DynamoDB and if my plant is too dry a Lambda function will trigger and send a message/notification on Telegram. I will visualize my data with Python Flask web application/server to see moisture over time 🥑. This project will also work with more devices, which is the idea, so it's scalable both up and down.
 
 ![schema](reference/schema.png)
 
@@ -25,7 +25,9 @@ When the device was up and running I created a new device in AWS IoT Core and ad
 
 * ### Setting up AWS DynamoDB
 
-When storing my data I chose DynamoDB, which is a NoSQL database, so I could have everything inside AWS. The table was pretty easy and straight forward to set up and I also found out that I could use ```${timestamp()}``` as value in Partition key so I didn't even need to send timestamp from ESP8266 anymore.
+When storing my data I chose DynamoDB, which is a NoSQL database, so I could have everything inside AWS. In the future when I have more devices I will probably store old data in a S3 bucket or maybe everything and just the necessary data in DynamoDB to lower the price and overall cost.
+
+The table in DynamoDB was pretty easy and straight forward to set up and I also found out that I could use ```${timestamp()}``` as value in Partition key so I didn't even need to send timestamp from ESP8266 anymore.
 
 ![db-table](reference/dynamo_table.png)
 
@@ -58,3 +60,7 @@ I then created a new rule in AWS IoT that triggers this Lambda function whenever
 Lastly I configured awscli on my computer to store my AIM users ```id key``` and ```secret key``` so I could get data directly from DynamoDB with a simple python script. I then put together a flask server to visualized my data with matplotlib. (reference below)
 
 ![flask_data](reference/plotted_moist.png)
+
+* ### Security
+
+In this project, and because it will only be used by me and locally at my home, I didn't look that carefully at the security. Some security measures I could have done or researched more is to hide all secrets. Mainly my AWS account ID and certificates on the ESP, I could have looked at HSM (Hardware Security Module) or TSM (Trusted Platform Module) and for AWS I could have used KMS (Key Management Service). But as I mentioned earlier, it didn't really feel that necessary to me. If I were to implement this project solution at a company or something like that, I would obviously look more into the security aspects.
